@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Result{% endblock %}
+
+{% block heading %}URL Shortener{% endblock %}
+
+{% block content %}
+  <br>
+    {% if error_message %}
+        <h1 class="error">{{ error_message }}</h1>
+    {% endif %}
+    {% if success_message %}
+        <h1 class="error">{{ success_message }}</h1>
+        <p>Now you can visit <a href="{{ original_url }}">{{ short_url }} (This will redirect to the original URL: {{ original_url }})</a> </p>
+    {% endif %}
+  <br>
+{% endblock %}

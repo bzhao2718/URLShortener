@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+    <style type="text/css">
+        .fontsize20 {
+            font-size: 20px;
+        }
+    </style>
+
+{% block title %}URL Shortening Service{% endblock %}
+
+{% block heading %}URL Shortener{% endblock %}
+
+{% block content %}
+  <br>
+    <div class="panel-info bg-warning fontsize20">
+     {% if warnings %}
+         <p>{{ warnings }}</p>
+    {% endif %}
+    </div>
+  <form method="post">
+    {% csrf_token %}
+      <label for="id_original_url">Original URL: </label>
+      <input type="text" name="original_url" min_length=8, required=True, id="id_original_url" placeholder="Input Your URL">
+      <br>
+    <button class="btn-primary" type="submit">Shorten URL</button>
+  </form>
+  <br>
+    <div class="fontsize20 success text-success">
+    {% if success_message %}
+        <h1 class="error">{{ success_message }}</h1>
+        <p>Now you can visit <a href="{{ original_url }}">{{ short_url }} </a> (This will redirect to the original URL: {{ original_url }})</p>
+    {% endif %}
+    </div>
+
+  <br>
+{% endblock %}

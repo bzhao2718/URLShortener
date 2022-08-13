@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Shortened URL History{% endblock %}
+
+{% block heading %}URL Shortener{% endblock %}
+
+{% block content %}
+  <br/>
+    <h4>The following is a list of shortened urls you have created (order by creation date): </h4>
+ <br/>
+    <ul>
+        {% for original_url, url_key, created_date in url_history_list %}
+            <li class="list-group-item">
+                <span class="text-info">Original URL: </span> <span>{{ original_url }}</span>
+                <br/>
+                <span class="text-info">Short URL: </span> <span>{{ url_key }}</span>
+                <br/>
+                <span class="text-info">Date Crated: </span> <span>{{ created_date }}</span>
+                <br/>
+            </li>
+    {% endfor %}
+    </ul>
+  <br/>
+{% endblock %}
