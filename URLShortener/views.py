@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import ShortURL
 from .forms import URLShortenForm, URLGenerateForm
@@ -8,7 +9,10 @@ from django.contrib.auth.decorators import login_required
 import datetime, os
 import time
 from . import generator_util, Constants, DaoUtil
+from .key_generator import key_generator_factory
 
+
+key_generator = key_generator_factory(strategy="random")
 
 def home(request):
     context = {'name': 'Home'}
@@ -88,7 +92,7 @@ def generate(request):
         if request.method == "POST":
             form_data = URLGenerateForm(request.POST)
             original_url = form_data.data.get('original_url')
-            url_key = generator_util.generate_unique_key()
+            url_key = key_generator.generate_unique_key()
 
             DaoUtil.save_shorturl(original_url=original_url, url_key=url_key, user_id=request.user.id)
 
@@ -118,30 +122,39 @@ def signup(request):
     return render(request, "signup.html", context)
 
 
-def create_examples():
-    dt = datetime.datetime.now()
-    # timestamp = datetime.timestamp(now)
-    timestamp = time.time()
-    # visitor = Visitor(name="Jack Zhao",email="myemal@emal.com", created_time=dt)
-    # visitor.save()
-    shorturl = ShortURL(url_key="abcdef", original_url="https://github.com/PacktPublishing/Web-Development-with-Django",
-                        created_time=dt, )
-    shorturl.save()
+# def create_examples():
+#     dt = datetime.datetime.now()
+#     # timestamp = datetime.timestamp(now)
+#     timestamp = time.time()
+#     # visitor = Visitor(name="Jack Zhao",email="myemal@emal.com", created_time=dt)
+#     # visitor.save()
+#     shorturl = ShortURL(url_key="abcdef", original_url="https://github.com/PacktPublishing/Web-Development-with-Django",
+#                         created_time=dt, )
+#     shorturl.save()
+#
+#
+# def print_examples():
+#     # visitor=Visitor.objects.get(name="Jack Zhao")
+#     # print("visitor: ", visitor)
+#     shorturl = ShortURL.objects.get(url_key="abcdef")
+#     print("shorturl key: {} | and original url: {}".format(shorturl.url_key, shorturl.original_url))
+#
 
 
-def print_examples():
-    # visitor=Visitor.objects.get(name="Jack Zhao")
-    # print("visitor: ", visitor)
-    shorturl = ShortURL.objects.get(url_key="abcdef")
-    print("shorturl key: {} | and original url: {}".format(shorturl.url_key, shorturl.original_url))
-
-
+####################################
+######### For Testing ##############
+###################################
 @login_required
 def profile(request):
     user = request.user
     permissions = user.get_all_permissions()
     return render(request, "profile.html", {'user': user, 'permissions': permissions})
 
+# @login_required
+def greet_user(request):
+    """Return a testing greeting HttpResponse"""
+    user = request.user
+    return HttpResponse("Greetings {username}".format(username=user))
 
 from django.views import View
 from django.views.generic.edit import FormView
@@ -159,3 +172,5 @@ class ShortenerView(FormView):
 
 class LoginFormView(FormView):
     template_name = "registration/login.html"
+
+

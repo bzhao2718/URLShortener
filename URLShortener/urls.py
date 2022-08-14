@@ -34,4 +34,6 @@ urlpatterns = [
     path('', views.generate),
     path('urlshortener/', admin_site.urls),
 
+    path('test/greet_user/',views.greet_user, name="greet_user"),
+
 ]
